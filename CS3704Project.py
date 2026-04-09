@@ -1,3 +1,4 @@
+# CS 3704 Project
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout
 from PyQt6.QtCore import QTimer, QTime
