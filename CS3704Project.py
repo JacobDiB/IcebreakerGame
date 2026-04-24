@@ -25,7 +25,16 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
     
     def __init__(self):
         super().__init__() # something important about accessing other functions i guess
-        
+
+        # Prompts
+        self.prompts = [
+            "What is your favorite movie?",
+            "What is your dream job?",
+            "What is your favorite food?",
+            "What is a place you want to visit?",
+            "What is your biggest fear?"
+        ]
+
         self.num_players = 0
         self.num_lives = 0
         self.player_names = []
@@ -155,7 +164,7 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
         self.responses = {}
 
         # prompt
-        self.prompt = "What is your favorite movie?"
+        self.prompt = random.choice(self.prompts)
 
         # prompt label
         self.prompt_label = QLabel(self.prompt)
