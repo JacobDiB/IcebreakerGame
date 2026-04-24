@@ -141,7 +141,7 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
             return
 
         self.lives = {}
-
+        # give each plyaer the starting number of lives
         for name in self.player_names:
             self.lives[name] = self.num_lives
         # success
@@ -207,17 +207,21 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
             self.update_player_prompt()
 
     def vote(self):
+        # clear old responce screen
         self.clear_old()
-
+        # discionary that connects player to votes
         self.vote_boxes = {}
 
+        # title for voting screen
         title = QLabel("Guess who wrote each answer")
         title.setFont(prompt_font)
         self.layout.addWidget(title)
 
+        #shuffle the answers
         response_items = list(self.responses.items())
         random.shuffle(response_items)
 
+        # make label and dropdown per player
         for real_player, response in response_items:
             response_label = QLabel(f"Answer: {response}")
             response_label.setFont(default_font)
@@ -230,27 +234,33 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
 
             self.vote_boxes[real_player] = box
 
+        # button for submitting all guesses
         submit_votes_button = QPushButton("Submit Votes")
         submit_votes_button.setFont(default_font)
         submit_votes_button.clicked.connect(self.check_votes)
         self.layout.addWidget(submit_votes_button)
 
     def check_votes(self):
+        # clear voting screen
         self.clear_old()
 
         result_title = QLabel("Round Results")
         result_title.setFont(prompt_font)
         self.layout.addWidget(result_title)
 
+        # cheack the guesses to the real answers
         for real_player in self.vote_boxes:
+            # get the player name
             guessed_player = self.vote_boxes[real_player].currentText()
 
+            # if guess matches player loses life
             if guessed_player == real_player:
                 self.lives[real_player] -= 1
                 result = QLabel(f"{real_player}'s answer was guessed correctly. They lose 1 life.")
             else:
                 result = QLabel(f"{real_player}'s answer was not guessed correctly.")
 
+            # show the result
             result.setFont(default_font)
             self.layout.addWidget(result)
 
@@ -258,13 +268,16 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
         lives_title.setFont(prompt_font)
         self.layout.addWidget(lives_title)
 
+        # show each players current life count
         for player in self.player_names:
             lives_label = QLabel(f"{player}: {self.lives[player]} lives")
             lives_label.setFont(default_font)
             self.layout.addWidget(lives_label)
 
+        # check if any player lost all lives
         loser_found = False
 
+        # check if any player has 0 lives
         for player in self.player_names:
             if self.lives[player] <= 0:
                 loser_found = True
@@ -272,11 +285,13 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
                 loser_label.setFont(prompt_font)
                 self.layout.addWidget(loser_label)
 
+        # if someone lost return to main menu
         if loser_found:
             restart_button = QPushButton("Return to Main Menu")
             restart_button.setFont(default_font)
             restart_button.clicked.connect(self.main_menu)
             self.layout.addWidget(restart_button)
+        # if nobody lost go back
         else:
             end_button = QPushButton("End Demo")
             end_button.setFont(default_font)
@@ -284,18 +299,22 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
             self.layout.addWidget(end_button)
 
     def end_demo(self):
+        # clear the screen
         self.clear_old()
 
+        # show that round is finished
         end_label = QLabel("One full prompt round is complete.")
         end_label.setFont(prompt_font)
         self.layout.addWidget(end_label)
 
+        # buttom to return to main menu
         menu_button = QPushButton("Return to Main Menu")
         menu_button.setFont(default_font)
         menu_button.clicked.connect(self.main_menu)
         self.layout.addWidget(menu_button)
 
-app = QApplication(sys.argv) # makes the app appear
-window = App_Functions()
-window.show()
-sys.exit(app.exec()) # dont delay running this. the window will still process on system exit but the thing will freeze if system exit is delayed.
+if __name__ == "__main__": # make tetsing possible
+    app = QApplication(sys.argv) # makes the app appear
+    window = App_Functions()
+    window.show()
+    sys.exit(app.exec())# dont delay running this. the window will still process on system exit but the thing will freeze if system exit is delayed.
