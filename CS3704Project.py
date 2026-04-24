@@ -61,9 +61,29 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
 
 
         self.button = QPushButton("Play!")
-        self.button.clicked.connect(self.game_setup_menu)
+        self.button.clicked.connect(self.game_tutorial)
         self.button.setFont(main_button_font)
 
+        self.layout.addWidget(self.button)
+
+        self.setLayout(self.layout)
+
+    def game_tutorial(self):
+        self.clear_old()
+
+        self.label = QLabel("Tutorial: First enter the game settings and click play.\n" \
+        "Then Each person will secretly enter the answer to the icebreaker question.\n" \
+        "After every player has entered an answer, everyone will try to figure out which\n" \
+        "player gave each answer through social deduction. For every person who correctly\n" \
+        "guesses your answer, you lose one life. Play continues until the first player\n" \
+        "loses all of their lives.")
+        self.label.setFont(default_font)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.layout.addWidget(self.label)
+
+        self.button = QPushButton("Begin")
+        self.button.setFont(default_font)
+        self.button.clicked.connect(self.game_setup_menu)
         self.layout.addWidget(self.button)
 
         self.setLayout(self.layout)
