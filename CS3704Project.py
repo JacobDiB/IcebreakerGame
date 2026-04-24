@@ -127,6 +127,12 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
         for i in range(len(self.player_names)):
             self.player_names[i] = self.player_names[i].strip()
 
+        # check if any player name is blank
+        for name in self.player_names:
+            if name == "":
+                self.label.setText("Player names cannot be blank")
+                return
+
         # check values
         if self.num_lives <= 0:
             self.label.setText("Lives must be greater than 0")

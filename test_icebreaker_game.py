@@ -186,3 +186,15 @@ def test_full_one_prompt_integration(window):
     assert window.lives["Jacob"] == 0
     assert window.lives["Patrick"] == 0
     assert window.lives["Danial"] == 0
+
+def test_blank_player_name_shows_error_message(window):
+    # This setup is invalid because one player name is blank.
+    window.players_input.setText("3")
+    window.lives_input.setText("2")
+    window.names_input.setText("Jacob, , Danial")
+
+    # Try to start the game.
+    window.start_game()
+
+    # The game should show an error message and not continue.
+    assert window.label.text() == "Player names cannot be blank"
