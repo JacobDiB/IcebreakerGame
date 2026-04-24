@@ -1,7 +1,23 @@
 # CS 3704 Project
 import sys
 from PyQt6.QtWidgets import QApplication, QLineEdit, QWidget, QLabel, QVBoxLayout, QPushButton
-from PyQt6.QtCore import QTimer, QTime
+from PyQt6.QtCore import QTimer, QTime, Qt
+from PyQt6.QtGui import QFont
+
+default_font = QFont("Arial")
+default_font.setPointSize(16)
+
+prompt_font = QFont("Arial")
+prompt_font.setPointSize(18)
+prompt_font.setBold(True)
+
+title_font = QFont("Arial")
+title_font.setPointSize(26)
+title_font.setBold(True)
+
+main_button_font = QFont("Arial")
+main_button_font.setPointSize(20)
+main_button_font.setBold(True)
 
 class App_Functions(QWidget): # i dont like object orianted programmering but this works and im not gonna change that
     
@@ -16,26 +32,68 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
         # Game title
         self.setWindowTitle("Ice Breaker Game")
         self.layout = QVBoxLayout()
+
+        self.main_menu()
+
+    #def on_click(self):
+    #    self.started = True
+    #    self.timer.start(1000) # in ms, so 1000 is one second
+
+    #def one_second_passed(self): # this is basicly a defined function
+    #    self.seconds_past = self.seconds_past + 1 # incrementor
+    #    self.label.setText(f"le epic u wasted {self.seconds_past} seconds looking at this")
+
+    def clear_old(self):
+        # clear old layout
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).widget().setParent(None)
+
+    def main_menu(self):
+        self.clear_old()
+        
+        self.label = QLabel("Ice Breaker Game")        
+        self.label.setFont(title_font)
+        self.label.setAlignment(
+            Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
+        )
+        self.layout.addWidget(self.label)
+
+
+        self.button = QPushButton("Play!")
+        self.button.clicked.connect(self.game_setup_menu)
+        self.button.setFont(main_button_font)
+
+        self.layout.addWidget(self.button)
+
+        self.setLayout(self.layout)
+
+    def game_setup_menu(self):
+        self.clear_old()
+        
         self.label = QLabel("Enter game setup information")
         self.layout.addWidget(self.label)
 
         # Number of players entry box
         self.players_input = QLineEdit(self)
+        self.players_input.setFont(default_font)
         self.players_input.setPlaceholderText("Enter number of players")
         self.layout.addWidget(self.players_input)
 
         # Number of lives entry box
         self.lives_input = QLineEdit(self)
+        self.lives_input.setFont(default_font)
         self.lives_input.setPlaceholderText("Enter number of lives")
         self.layout.addWidget(self.lives_input)
 
         # Names entry box
         self.names_input = QLineEdit(self)
+        self.names_input.setFont(default_font)
         self.names_input.setPlaceholderText("Enter player names (comma separated)")
         self.layout.addWidget(self.names_input)
 
         # Start game button
         self.button = QPushButton("Start Game")
+        self.button.setFont(default_font)
         self.button.clicked.connect(self.start_game)
         self.layout.addWidget(self.button)
 
@@ -47,13 +105,6 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
 
         self.setLayout(self.layout)
 
-    #def on_click(self):
-    #    self.started = True
-    #    self.timer.start(1000) # in ms, so 1000 is one second
-
-    #def one_second_passed(self): # this is basicly a defined function
-    #    self.seconds_past = self.seconds_past + 1 # incrementor
-    #    self.label.setText(f"le epic u wasted {self.seconds_past} seconds looking at this")
        
     def start_game(self):
         players_text = self.players_input.text()
@@ -92,9 +143,7 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
         self.start_prompt_round()
 
     def start_prompt_round(self):
-        # clear old layout
-        for i in reversed(range(self.layout.count())):
-            self.layout.itemAt(i).widget().setParent(None)
+        self.clear_old()
 
         # initialize game state
         self.current_player_index = 0
@@ -105,18 +154,22 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
 
         # prompt label
         self.prompt_label = QLabel(self.prompt)
+        self.prompt_label.setFont(prompt_font)
         self.layout.addWidget(self.prompt_label)
 
         # player label
         self.player_label = QLabel("")
+        self.player_label.setFont(default_font)
         self.layout.addWidget(self.player_label)
 
         # response input
         self.response_input = QLineEdit(self)
+        self.response_input.setFont(default_font)
         self.layout.addWidget(self.response_input)
 
         # submit button
         self.submit_button = QPushButton("Submit")
+        self.submit_button.setFont(default_font)
         self.submit_button.clicked.connect(self.submit_response)
         self.layout.addWidget(self.submit_button)
 
