@@ -139,6 +139,13 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
         if len(self.player_names) != self.num_players:
             self.label.setText("Names must match number of players")
             return
+        
+
+        
+        # check for duplicate player names
+        if len(set(self.player_names)) != len(self.player_names):
+            self.label.setText("Player names must be unique")
+            return
 
         self.lives = {}
         # give each plyaer the starting number of lives
