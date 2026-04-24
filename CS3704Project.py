@@ -93,8 +93,13 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
 
     def start_prompt_round(self):
         # clear old layout
-        for i in reversed(range(self.layout.count())):
-            self.layout.itemAt(i).widget().setParent(None)
+        for i in reversed(range(self.layout.count())): #should ensure that the program doesn't crash if a file is already empty, just in case
+            item = self.layout.itemAt(i)
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+            else:
+                self.layout.removeItem(item)
 
         # initialize game state
         self.current_player_index = 0
