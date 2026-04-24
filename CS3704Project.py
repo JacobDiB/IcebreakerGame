@@ -1,8 +1,9 @@
 # CS 3704 Project
 import sys
-from PyQt6.QtWidgets import QApplication, QLineEdit, QWidget, QLabel, QVBoxLayout, QPushButton
+from PyQt6.QtWidgets import QApplication, QLineEdit, QWidget, QLabel, QVBoxLayout, QPushButton, QComboBox
 from PyQt6.QtCore import QTimer, QTime, Qt
 from PyQt6.QtGui import QFont
+import random
 
 default_font = QFont("Arial")
 default_font.setPointSize(16)
@@ -139,6 +140,10 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
             self.label.setText("Names must match number of players")
             return
 
+        self.lives = {}
+
+        for name in self.player_names:
+            self.lives[name] = self.num_lives
         # success
         self.start_prompt_round()
 
@@ -202,8 +207,93 @@ class App_Functions(QWidget): # i dont like object orianted programmering but th
             self.update_player_prompt()
 
     def vote(self):
-        return
+        self.clear_old()
 
+        self.vote_boxes = {}
+
+        title = QLabel("Guess who wrote each answer")
+        title.setFont(prompt_font)
+        self.layout.addWidget(title)
+
+        response_items = list(self.responses.items())
+        random.shuffle(response_items)
+
+        for real_player, response in response_items:
+            response_label = QLabel(f"Answer: {response}")
+            response_label.setFont(default_font)
+            self.layout.addWidget(response_label)
+
+            box = QComboBox()
+            box.setFont(default_font)
+            box.addItems(self.player_names)
+            self.layout.addWidget(box)
+
+            self.vote_boxes[real_player] = box
+
+        submit_votes_button = QPushButton("Submit Votes")
+        submit_votes_button.setFont(default_font)
+        submit_votes_button.clicked.connect(self.check_votes)
+        self.layout.addWidget(submit_votes_button)
+
+    def check_votes(self):
+        self.clear_old()
+
+        result_title = QLabel("Round Results")
+        result_title.setFont(prompt_font)
+        self.layout.addWidget(result_title)
+
+        for real_player in self.vote_boxes:
+            guessed_player = self.vote_boxes[real_player].currentText()
+
+            if guessed_player == real_player:
+                self.lives[real_player] -= 1
+                result = QLabel(f"{real_player}'s answer was guessed correctly. They lose 1 life.")
+            else:
+                result = QLabel(f"{real_player}'s answer was not guessed correctly.")
+
+            result.setFont(default_font)
+            self.layout.addWidget(result)
+
+        lives_title = QLabel("Lives Remaining")
+        lives_title.setFont(prompt_font)
+        self.layout.addWidget(lives_title)
+
+        for player in self.player_names:
+            lives_label = QLabel(f"{player}: {self.lives[player]} lives")
+            lives_label.setFont(default_font)
+            self.layout.addWidget(lives_label)
+
+        loser_found = False
+
+        for player in self.player_names:
+            if self.lives[player] <= 0:
+                loser_found = True
+                loser_label = QLabel(f"Game over. {player} lost all of their lives.")
+                loser_label.setFont(prompt_font)
+                self.layout.addWidget(loser_label)
+
+        if loser_found:
+            restart_button = QPushButton("Return to Main Menu")
+            restart_button.setFont(default_font)
+            restart_button.clicked.connect(self.main_menu)
+            self.layout.addWidget(restart_button)
+        else:
+            end_button = QPushButton("End Demo")
+            end_button.setFont(default_font)
+            end_button.clicked.connect(self.end_demo)
+            self.layout.addWidget(end_button)
+
+    def end_demo(self):
+        self.clear_old()
+
+        end_label = QLabel("One full prompt round is complete.")
+        end_label.setFont(prompt_font)
+        self.layout.addWidget(end_label)
+
+        menu_button = QPushButton("Return to Main Menu")
+        menu_button.setFont(default_font)
+        menu_button.clicked.connect(self.main_menu)
+        self.layout.addWidget(menu_button)
 
 app = QApplication(sys.argv) # makes the app appear
 window = App_Functions()
